@@ -1,0 +1,112 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+
+@Component({
+  selector: 'app-user-creation',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule,ToastModule],
+  templateUrl: './user-creation.component.html',
+  styleUrls: ['./user-creation.component.scss'],
+    providers: [MessageService],
+  
+})
+export class UserCreationComponent implements OnInit {
+  maxDate: string = new Date().toISOString().split('T')[0];  // Limit Date of Birth to today
+  userForm: FormGroup;
+
+  // ✅ List of countries
+  countries = [
+    "United States", "Canada", "United Kingdom", "India", "China", "Russia", "Germany",
+    "France", "Australia", "Japan", "Brazil", "South Africa", "Mexico", "Spain", "Italy",
+    "Netherlands", "Sweden", "Switzerland", "South Korea", "Singapore", "Argentina"
+  ];
+
+  constructor(private fb: FormBuilder,
+      private messageService: MessageService,
+      private router: Router) {
+    // Initialize the form with validation
+    this.userForm = this.fb.group({
+      first_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+      last_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      mobile_phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      address_line_1: ['', [Validators.required, Validators.maxLength(40)]],
+      address_line_2: ['', [Validators.maxLength(40)]],
+      city: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+      state: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+      zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$|^\d{9}$/)]],
+      country: ['United States', Validators.required],
+      dob: ['', Validators.required],
+      gender: ['', Validators.required],
+      agreeTerms: [false, Validators.requiredTrue],  // Corrected to match the checkbox name in HTML
+      allowNotifications: [false],
+      notes: ['', [Validators.maxLength(200)]] // ✅ Notes field (optional, max 200 characters)
+    });
+  }
+
+  ngOnInit(): void {
+    // Watch for changes in notification toggle
+    this.userForm.get('allowNotifications')?.valueChanges.subscribe(value => {
+      console.log('Notifications Toggled:', value);
+    });
+  }
+
+  // Form submission method
+  onSubmit(): void {
+    
+    if (this.userForm.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please fill out all fields correctly.',
+      });
+      return;
+    }
+
+    // Simulate email uniqueness check (replace with actual API call)
+    const isEmailUnique = this.checkEmailUniqueness(this.userForm.value.email);
+    if (!isEmailUnique) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Email is already registered.',
+      });
+      return;
+    }
+
+    const registrationSuccess = true; // Replace this with actual condition based on your API response
+
+    if (registrationSuccess) {
+      // Show success message
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'User creation successful! Redirecting to Dashboard...',
+      });
+
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        this.router.navigate(['/dashboard']);
+      }, 2000);
+    } else {
+      // Show error message
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'User creation failed. Please try again.',
+      });
+    }
+  }
+
+  // Simulate email uniqueness check (replace with actual API call)
+  checkEmailUniqueness(email: string): boolean {
+    // Replace this with an actual API call to check if the email is unique
+    const registeredEmails = ['test@example.com', 'user@example.com'];
+    return !registeredEmails.includes(email);
+  }
+}
