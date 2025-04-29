@@ -1,0 +1,92 @@
+<section class="bg-gray-50"> 
+  <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <a href="#" class="flex items-center mb-6">
+      <img class="w-auto h-12 mr-2" src="images/logo.svg" alt="logo">
+    </a>
+    <div class="w-full bg-white rounded-lg shadow  md:mt-0 sm:max-w-md xl:p-0 ">
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
+          Sign in to your account
+        </h1>
+       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4 md:space-y-6">
+  <!-- Email 
+     dark:bg-gray-900
+dark:border
+     -->
+  <div>
+    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Your email<span style="color: red;"> *</span></label>
+    <input 
+      type="email" 
+      formControlName="email" 
+      class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2" 
+      placeholder="name@company.com" 
+      [ngClass]="{'border-red-500': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}"
+      
+    />
+    <small *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched" class="text-red-500 block mt-1">Email is required.</small>
+    <small *ngIf="loginForm.get('email')?.errors?.['email']" class="text-red-500 block mt-1">Please enter a valid email address.</small>
+  </div>
+
+  <!--
+    pInputText  Password -->
+  <div class="w-full">
+    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 ">Password<span style="color: red;"> *</span></label>
+    <input 
+      type="password" 
+      formControlName="password" 
+      class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2" 
+      [ngClass]="{'border-red-500': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}"
+      placeholder="Password"
+    />
+    <small *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched" class="text-red-500 block mt-1">Password is required.</small>
+  </div>
+
+  <!-- Remember Me & Forgot Password -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-start">
+      <div class="flex items-center h-5">
+        <input 
+          id="remember" 
+          aria-describedby="remember" 
+          type="checkbox" 
+          formControlName="rememberMe" 
+          class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300" 
+        />
+      </div>
+      <div class="ml-3 text-sm">
+        <label for="remember" class="text-gray-500 ">Remember me</label>
+      </div>
+    </div>
+    <a routerLink="/forgot-password" class="text-sm font-medium text-primary-600 hover:underline ">Forgot password?</a>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="w-full">
+    <p-button label="Sign In" type="submit" [disabled]="loginForm.invalid" class="grid"></p-button>
+  </div>
+
+ <!-- Sign Up & OTP Login Links -->
+<p class="text-sm font-light text-gray-500 flex justify-between">
+  <span>Don’t have an account yet? 
+    <a routerLink="/register" class="font-medium text-primary-600 hover:underline">Sign up</a>
+  </span>
+  <a routerLink="/otp-login" class="text-sm text-primary-600 hover:underline cursor-pointer">
+    Login with OTP
+  </a>
+</p>
+
+ 
+</form>
+
+  <!-- OTP Login Link
+  <div class="mt-2 flex justify-end">
+    <a routerLink="/otp-login" class="text-sm text-blue-600 hover:underline cursor-pointer flex justify-end">
+      Login with OTP
+    </a>
+  </div> -->
+
+      </div>
+    </div>
+  </div>
+</section>
+<p-toast></p-toast>
